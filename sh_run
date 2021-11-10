@@ -1,16 +1,19 @@
 ---
-- name: show running-config 
+- name: Obtener_info
   hosts: all
   gather_facts: false
-  connection: local
+  connection: network_cli
 
   tasks:
-    - name: running
-      ios_command:
-        commands:
-          - show run
-          - show ip int brief
+  - name: vty
+    ios_command:
+      commands:
 
-      register: print_output
+        - show run | inc line vty
+        - show run | inc vrf INTERNET
 
-    -  debug: var=print_output.stdout_lines
+    register: get_vty_info
+
+  - name: imprimimos la info
+    debug:
+      var: get_vty_info
